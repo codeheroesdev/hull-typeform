@@ -43,16 +43,18 @@ export default class SyncAgent {
     return traits;
   }
 
-  getEventProps(response, formName, questions) {
+  getEventProps(response, formId, questions) {
     const props = {
-      form_name: formName,
       // TODO:
-      // form_id: formId
+      // form_name: formName,
+      form_id: formId
     };
     _.map(response.answers, (answer, questionId) => {
       const question = _.find(questions, { id: questionId });
       if (question) {
         props[question.question] = answer;
+      } else {
+        props[questionId] = answer;
       }
     });
 
@@ -60,6 +62,8 @@ export default class SyncAgent {
       const question = _.find(questions, { id: questionId });
       if (question) {
         props[question.question] = answer;
+      } else {
+        props[questionId] = answer;
       }
     });
 
