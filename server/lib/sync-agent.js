@@ -1,4 +1,5 @@
 import _ from "lodash";
+import striptags from "striptags";
 
 export default class SyncAgent {
 
@@ -51,7 +52,7 @@ export default class SyncAgent {
     _.map(response.answers, (answer, questionId) => {
       const question = _.find(questions, { id: questionId });
       if (question) {
-        props[question.question] = answer;
+        props[striptags(question.question)] = answer;
       } else {
         props[questionId] = answer;
       }
@@ -73,7 +74,8 @@ export default class SyncAgent {
     const context = {
       useragent: response.metadata.user_agent,
       referer: response.metadata.referer,
-      source: "typeform",
+      // if the trait is set through the settings with "source" option, so we don't dbouble the prefix
+      // source: "typeform",
       event_type: "form",
       event_id: ["typeform", response.token, "submit"].join("-"),
       created_at: response.metadata.date_submit

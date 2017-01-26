@@ -4,6 +4,7 @@ import cors from "cors";
 import _ from "lodash";
 import moment from "moment";
 import Promise from "bluebird";
+import striptags from "striptags";
 
 import WebApp from "./util/app/web";
 import StaticRouter from "./util/router/static";
@@ -130,7 +131,7 @@ app.get("/schema/questions", cors(), tokenMiddleware, hullMiddleware, (req, res)
     .then(({ body }) => {
       res.json({
         options: body.questions.map(f => {
-          return { label: f.question, value: f.id };
+          return { label: striptags(f.question), value: f.id };
         })
       });
     })
