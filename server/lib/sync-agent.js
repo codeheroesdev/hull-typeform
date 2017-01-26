@@ -9,7 +9,6 @@ export default class SyncAgent {
 
   getIdent(typeformResponse) {
     const ident = {};
-    ident.anonymous_id = `typeform:${typeformResponse.token}`;
 
     const emailQuestionId = this.hullAgent.getShipSettings().question_as_email;
     if (emailQuestionId) {
