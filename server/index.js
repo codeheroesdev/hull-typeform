@@ -52,7 +52,7 @@ app.post("/fetch", tokenMiddleware, bodyParser.urlencoded({ extended: false }), 
     })
     .catch(typeformClient.handleError)
     .then(({ body }) => {
-      instrumentationAgent.metricInc("ship.incoming.usersData", body.responses.length);
+      instrumentationAgent.metricInc("ship.incoming.usersData", body.responses.length, req.hull.client.configuration());
       req.hull.client.logger.debug("ship.incoming.usersData", body.responses.length);
       return Promise.all(_.map(body.responses, response => {
         const ident = syncAgent.getIdent(response);
@@ -65,7 +65,7 @@ app.post("/fetch", tokenMiddleware, bodyParser.urlencoded({ extended: false }), 
           return null;
         }
 
-        instrumentationAgent.metricInc("ship.incoming.users");
+        instrumentationAgent.metricInc("ship.incoming.users", req.hull.client.configuration());
         req.hull.client.logger.debug("ship.incoming.user", { ident, traits });
         req.hull.client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
 
