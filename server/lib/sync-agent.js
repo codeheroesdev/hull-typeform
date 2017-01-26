@@ -51,12 +51,16 @@ export default class SyncAgent {
     };
     _.map(response.answers, (answer, questionId) => {
       const question = _.find(questions, { id: questionId });
-      props[question.question] = answer;
+      if (question) {
+        props[question.question] = answer;
+      }
     });
 
     _.map(response.hidden, (answer, questionId) => {
       const question = _.find(questions, { id: questionId });
-      props[question.question] = answer;
+      if (question) {
+        props[question.question] = answer;
+      }
     });
 
     return props;
