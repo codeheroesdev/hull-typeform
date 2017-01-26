@@ -1,0 +1,85 @@
+{
+  "name": "Typeform",
+  "description": "Fetch form responses",
+  "tags": ["incoming", "oneColumn"],
+  "picture": "picture.png",
+  "version": "0.0.1",
+  "settings": [],
+  "private_settings":[
+    {
+      "name":"api_key",
+      "title": "API key",
+      "description":"You can find it on My Account page.",
+      "type": "string"
+    },
+    {
+      "name":"typeform_uid",
+      "title": "Form",
+      "type": "string",
+      "format": "select",
+      "options" : {
+        "allowCreate": false,
+        "loadOptions": "/schema/typeforms"
+      }
+    },
+    {
+      "name":"question_as_email",
+      "title": "Which field match as user email",
+      "type": "string",
+      "format": "select",
+      "options" : {
+        "allowCreate": false,
+        "loadOptions": "/schema/questions"
+      }
+    },
+    {
+      "name" : "sync_answers_to_hull",
+      "title" : "List of form questions to save into Hull",
+      "type" : "array",
+      "format" : "table",
+      "default": [],
+      "items" : {
+        "type" : "object",
+        "properties" : {
+          "question_id" : {
+            "type" : "string",
+            "format": "select",
+            "title" : "Typeform Question",
+            "options" : {
+              "allowCreate": true,
+              "loadOptions" : "/schema/questions"
+            }
+          },
+          "hull" : {
+            "type" : "string",
+            "format" : "trait",
+            "title" : "Hull Attributes",
+            "options": {
+              "allowCreate": true,
+              "source": "typeform"
+            }
+          }
+        },
+        "required" : [
+          "question_id",
+          "hull"
+        ]
+      }
+    },
+    {
+      "name":"last_fetch_at",
+      "title": "API key",
+      "type": "string",
+      "format": "hidden"
+    }
+  ],
+  "deployment_settings": [],
+  "resources": [],
+  "readme": "readme.md",
+  "ui": false,
+  "schedules": [{
+      "url": "/fetch",
+      "type": "cron",
+      "value": "*/5 * * * *"
+  }]
+}

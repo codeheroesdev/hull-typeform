@@ -1,0 +1,37 @@
+<html>
+<head>
+  <title>Computed traits Ship</title>
+  <link rel="stylesheet" href="//dd04rofzygnm0.cloudfront.net/releases/master/865f04865d2448286626bac92c518a8f8ea8bafe/stylesheets/neue.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/codemirror.min.js"></script>
+</head>
+<body>
+  <div class="pt-1 container-fluid">
+    <div class="flexRow row">
+      <div class="flexColumn userPane col-md-5 col-md-offset-3">
+        <div class="flexRow">
+          <h5 class="mb-0 mt-05 text-muted flexGrow">
+            <span>Webhook</span>
+          </h5>
+        </div>
+        <code style="font-size: 10px"><%= url %></code>
+        <hr />
+        <code style="font-size: 10px">
+        curl -X POST -H "Content-Type: application/json" -d '{"ping": "ping"}' "<%= url %>"
+        </code>
+
+
+        <form action="<%= action %>" method="POST">
+          <textarea name="code" id="code"><%= code %></textarea>
+          <button>Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      lineNumbers: true
+    });
+  </script>
+</body>
+</html>
