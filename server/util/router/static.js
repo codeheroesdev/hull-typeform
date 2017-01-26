@@ -13,9 +13,6 @@ export default function StaticRouter({ Hull }) {
   router.get("/manifest.json", Manifest(`${__dirname}/../..`));
   router.get("/", Readme);
   router.get("/readme", Readme);
-  router.get("/readme.md", (req, res) => {
-    res.end(fs.readFileSync(`${__dirname}/../../../README.md`));
-  });
 
   return router;
 }
