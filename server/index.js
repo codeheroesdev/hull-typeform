@@ -104,7 +104,7 @@ app.post("/fetch-all", tokenMiddleware, bodyParser.urlencoded({ extended: false 
     return res.redirect("back");
   }
 
-  const limit = 1;
+  const limit = 100;
   const offset = req.query.offset || 0;
   const typeformUid = req.hull.ship.private_settings.typeform_uid;
 
@@ -155,7 +155,7 @@ app.post("/fetch-all", tokenMiddleware, bodyParser.urlencoded({ extended: false 
           request.post(`https://${req.hostname}/fetch-all`)
             .query(req.query)
             .query({
-              offset: (parseInt(offset) + 1)
+              offset: (parseInt(offset) + limit)
             })
             .send()
             .end();
