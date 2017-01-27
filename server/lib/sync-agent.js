@@ -35,7 +35,7 @@ export default class SyncAgent {
       if (this.isChoice(answer.question_id)) {
         const rootQuestionId = answer.question_id.split("_").slice(0, 2).join("_");
         answerValue = _.filter(typeformResponse.answers, (a, questionId) => {
-          return questionId.search(rootQuestionId) != -1;
+          return questionId.search(rootQuestionId) !== -1;
         });
       } else {
         if (_.has(typeformResponse.answers, answer.question_id)) {
@@ -68,7 +68,7 @@ export default class SyncAgent {
         if (_.isArray(props[propName])) {
           props[propName].push(this.castAnswerType(questionId, answer));
         } else {
-          props[propName] = [props[propName], this.castAnswerType(questionId, answer)]
+          props[propName] = [props[propName], this.castAnswerType(questionId, answer)];
         }
       } else {
         props[propName] = this.castAnswerType(questionId, answer);
