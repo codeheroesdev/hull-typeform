@@ -198,9 +198,11 @@ app.get("/schema/typeforms", cors(), tokenMiddleware, hullMiddleware, (req, res)
     });
 });
 
-app.get("/schema/questions", cors(), tokenMiddleware, hullMiddleware, (req, res) => {
+app.get("/schema/questions/:type?", cors(), tokenMiddleware, hullMiddleware, (req, res) => {
   const instrumentationAgent = new InstrumentationAgent();
   const typeformClient = new TypeformClient(req.hull, instrumentationAgent);
+  const hullAgent = new HullAgent(req);
+  const syncAgent = new SyncAgent(req, hullAgent);
 
   if (!req.hull.ship.private_settings.typeform_uid
       || !typeformClient.ifConfigured()) {
@@ -213,11 +215,34 @@ app.get("/schema/questions", cors(), tokenMiddleware, hullMiddleware, (req, res)
 
   return typeformClient.get(`/form/${typeformUid}`)
     .then(({ body }) => {
-      res.json({
-        options: body.questions.map(f => {
-          return { label: striptags(f.question), value: f.id };
-        })
-      });
+      const result = [{
+        "label": "questions",
+        "options": _.chain(body.questions)
+          .filter(syncAgent.isNotHidden)
+          .thru(questions => {
+            return  questions.filter(f => {
+              if (req.params.type) {
+                return syncAgent.getQuestionType(f.id) == req.params.type;
+              }
+              return true;
+            }) || questions;
+          })
+          .map(f => {
+            return { label: striptags(f.question), value: f.id };
+          })
+          .uniqBy("label")
+          .value()
+      }, {
+        "label": "hidden",
+        "options": _.chain()
+          .filter(syncAgent.isHidden)
+          .map(f => {
+            return { label: striptags(f.question), value: f.id };
+          })
+          .uniqBy("label")
+          .value()
+      }];
+      res.json({ options: result });
     })
     .catch(() => {
       res.json({ options: [] });
