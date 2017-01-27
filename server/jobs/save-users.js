@@ -20,7 +20,7 @@ export default function saveUsers(req) {
       return null;
     }
 
-    instrumentationAgent.metricInc("ship.incoming.users", hullClient.configuration());
+    instrumentationAgent.metricInc("ship.incoming.users", 1, hullClient.configuration());
     hullClient.logger.debug("ship.incoming.user", { ident, traits });
     hullClient.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
 

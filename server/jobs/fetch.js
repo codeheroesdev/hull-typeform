@@ -14,7 +14,7 @@ export default function fetch(req) {
     })
     .catch(typeformClient.handleError)
     .then(({ body }) => {
-      instrumentationAgent.metricInc("ship.incoming.usersData", body.responses.length, hullClient.configuration());
+      instrumentationAgent.metricInc("ship.incoming.users.fetch", body.responses.length, hullClient.configuration());
       hullClient.logger.debug("ship.incoming.usersData", body.responses.length);
       return saveUsers({ shipApp: req.shipApp, payload: { body, typeformUid } })
         .then(() => {
