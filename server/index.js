@@ -5,6 +5,7 @@ import _ from "lodash";
 import moment from "moment";
 import Promise from "bluebird";
 import striptags from "striptags";
+import request from "superagent";
 
 import WebApp from "./util/app/web";
 import StaticRouter from "./util/router/static";
@@ -90,6 +91,89 @@ app.post("/fetch", tokenMiddleware, bodyParser.urlencoded({ extended: false }), 
       req.hull.client.logger.error("fetch.error", err);
       res.end("err");
     });
+});
+
+
+app.post("/fetch-all", tokenMiddleware, bodyParser.urlencoded({ extended: false }), hullMiddleware, (req, res) => {
+  const instrumentationAgent = new InstrumentationAgent();
+  const typeformClient = new TypeformClient(req.hull, instrumentationAgent);
+  const hullAgent = new HullAgent(req);
+  const syncAgent = new SyncAgent(req, hullAgent);
+
+  if (!typeformClient.ifConfigured()) {
+    return res.redirect("back");
+  }
+
+  const limit = 1;
+  const offset = req.query.offset || 0;
+  const typeformUid = req.hull.ship.private_settings.typeform_uid;
+
+  if (!typeformUid) {
+    return res.redirect("back");
+  }
+
+  req.hull.client.logger.info("fetchAll.offset", offset);
+
+  return typeformClient.get(`/form/${typeformUid}`)
+    .query({
+      completed: true,
+      order_by: "date_submit,asc",
+      limit,
+      offset
+    })
+    .catch(typeformClient.handleError)
+    .then(({ body }) => {
+      instrumentationAgent.metricInc("ship.incoming.usersData", body.responses.length, req.hull.client.configuration());
+      req.hull.client.logger.debug("ship.incoming.usersData", body.responses.length);
+      return Promise.all(_.map(body.responses, response => {
+        const ident = syncAgent.getIdent(response);
+        const traits = syncAgent.getTraits(response);
+        const eventProps = syncAgent.getEventProps(response, typeformUid, body.questions);
+        const eventContext = syncAgent.getEventContext(response);
+
+        if (!ident.email) {
+          req.hull.client.logger.debug("ship.incoming.user.skip", { ident, traits });
+          return null;
+        }
+
+        instrumentationAgent.metricInc("ship.incoming.users", req.hull.client.configuration());
+        req.hull.client.logger.debug("ship.incoming.user", { ident, traits });
+        req.hull.client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
+
+        return Promise.all([
+          req.hull.client
+          .as(ident)
+          .traits(traits, { source: "typeform" }),
+          req.hull.client
+          .as(ident)
+          .track("Form Submitted", eventProps, eventContext)
+        ]);
+      }))
+      .then(() => {
+        if (body.responses.length >= limit) {
+          req.hull.client.logger.debug("fetchAll.nextCall");
+          request.post(`https://${req.hostname}/fetch-all`)
+            .query(req.query)
+            .query({
+              offset: (parseInt(offset) + 1)
+            })
+            .send()
+            .end();
+        }
+        return res.redirect("back");
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      req.hull.client.logger.error("fetch.error", err);
+      res.end("err");
+    });
+});
+
+
+app.get("/admin", tokenMiddleware, hullMiddleware, (req, res) => {
+
+  return res.render("admin.html", { query: req.query });
 });
 
 
