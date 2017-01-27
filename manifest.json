@@ -3,6 +3,7 @@
   "description": "Fetch form responses",
   "tags": ["incoming", "oneColumn"],
   "picture": "picture.png",
+  "admin" : "admin",
   "version": "0.0.1",
   "settings": [],
   "private_settings":[
