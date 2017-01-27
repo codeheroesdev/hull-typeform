@@ -143,7 +143,7 @@ app.post("/fetch-all", tokenMiddleware, bodyParser.urlencoded({ extended: false 
         return Promise.all([
           req.hull.client
           .as(ident)
-          .traits(traits, { source: "typeform" }),
+          .traits(traits),
           req.hull.client
           .as(ident)
           .track("Form Submitted", eventProps, eventContext)
