@@ -136,7 +136,7 @@ app.post("/fetch-all", tokenMiddleware, bodyParser.urlencoded({ extended: false 
           return null;
         }
 
-        instrumentationAgent.metricInc("ship.incoming.users", req.hull.client.configuration());
+        instrumentationAgent.metricInc("ship.incoming.users", 1, req.hull.client.configuration());
         req.hull.client.logger.debug("ship.incoming.user", { ident, traits });
         req.hull.client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
 
