@@ -1,6 +1,6 @@
 {
   "name": "typeform-webhook",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Hull Typeform integration",
   "main": "index.js",
   "scripts": {

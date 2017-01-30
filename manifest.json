@@ -4,7 +4,7 @@
   "tags": ["incoming", "oneColumn"],
   "picture": "picture.png",
   "admin" : "admin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "settings": [],
   "private_settings":[
     {
