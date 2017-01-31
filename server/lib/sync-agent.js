@@ -30,15 +30,25 @@ export default class SyncAgent {
     const answersToSave = _.get(this.hullAgent.getShipSettings(), "sync_answers_to_hull", []);
 
     const traits = _.reduce(answersToSave, (t, answer) => {
-      if (_.has(typeformResponse.answers, answer.question_id)) {
-        _.set(t, answer.hull, _.get(typeformResponse.answers, answer.question_id));
+      let answerValue;
+
+      if (this.isChoice(answer.question_id)) {
+        const rootQuestionId = answer.question_id.split("_").slice(0, 2).join("_");
+        answerValue = _.filter(typeformResponse.answers, (a, questionId) => {
+          return questionId.search(rootQuestionId) !== -1;
+        });
+      } else {
+        if (_.has(typeformResponse.answers, answer.question_id)) {
+          answerValue = _.get(typeformResponse.answers, answer.question_id);
+        }
+        if (_.has(typeformResponse.hidden, answer.question_id)) {
+          answerValue = _.get(typeformResponse.hidden, answer.question_id);
+        }
       }
-      if (_.has(typeformResponse.hidden, answer.question_id)) {
-        _.set(t, answer.hull, _.get(typeformResponse.hidden, answer.question_id));
-      }
+
+      _.set(t, answer.hull, this.castAnswerType(answer.question_id, answerValue));
       return t;
     }, {});
-
 
     return traits;
   }
@@ -49,25 +59,56 @@ export default class SyncAgent {
       // form_name: formName,
       form_id: formId
     };
-    _.map(response.answers, (answer, questionId) => {
+
+    _.map(_.merge(response.answers, response.hidden), (answer, questionId) => {
       const question = _.find(questions, { id: questionId });
-      if (question) {
-        props[striptags(question.question)] = answer;
+      const propName = (question ? striptags(question.question) : questionId);
+
+      if (_.has(props, propName)) {
+        if (_.isArray(props[propName])) {
+          props[propName].push(this.castAnswerType(questionId, answer));
+        } else {
+          props[propName] = [props[propName], this.castAnswerType(questionId, answer)];
+        }
       } else {
-        props[questionId] = answer;
+        props[propName] = this.castAnswerType(questionId, answer);
       }
     });
-
-    _.map(response.hidden, (answer, questionId) => {
-      const question = _.find(questions, { id: questionId });
-      if (question) {
-        props[question.question] = answer;
-      } else {
-        props[questionId] = answer;
-      }
-    });
-
     return props;
+  }
+
+  isHidden(question) {
+    return question.id.search("_") === -1;
+  }
+
+  isNotHidden(question) {
+    return question.id.search("_") !== -1;
+  }
+
+  getQuestionType(questionId = "") {
+    return (questionId || "").split("_")[0];
+  }
+
+  isChoice(questionId = "") {
+    return (questionId || "").split("_").slice(-2, -1).pop() === "choice";
+  }
+
+  castAnswerType(questionId = "", answer = "") {
+    const questionType = this.getQuestionType(questionId);
+
+    if (_.includes(["rating", "opinionscale", "number", "payment"], questionType)) {
+      return parseFloat(answer);
+    }
+
+    if (_.includes(["yesno", "terms"], questionType)) {
+      return answer === "1";
+    }
+
+    if (_.includes(["date"], questionType)) {
+      return answer === "1";
+    }
+
+    return answer;
   }
 
   getEventContext(response) {

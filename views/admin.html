@@ -13,6 +13,9 @@
           <h1 class="mb-0 mt-05  text-center"><i class="icon icon-hull" style="font-size:64px;"></i></h1>
           <div class="text-center">
             <form method="post" action="/fetch-all?ship=<%= query.ship %>&organization=<%= query.organization %>&secret=<%= query.secret%>">
+              <% if (completed !== null) { -%>
+              <h5>Completed Form Submissions: <%=completed%></h5>
+              <% } -%>
               <button class="btn btn-rounded btn-pill btn-primary">Fetch All Form Submissions</button>
             </form>
           </div>

@@ -4,7 +4,7 @@
   "tags": ["incoming", "oneColumn"],
   "picture": "picture.png",
   "admin" : "admin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "settings": [],
   "private_settings":[
     {
@@ -26,16 +26,18 @@
     {
       "name":"question_as_email",
       "title": "Which field match as user email",
+      "description": "If there is a email type field in the form - pick that",
       "type": "string",
       "format": "select",
       "options" : {
         "allowCreate": false,
-        "loadOptions": "/schema/questions"
+        "loadOptions": "/schema/questions/email"
       }
     },
     {
       "name" : "sync_answers_to_hull",
       "title" : "List of form questions to save into Hull",
+      "description": "Data fields should be saved to traits ending with _data suffix",
       "type" : "array",
       "format" : "table",
       "default": [],
