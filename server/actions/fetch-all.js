@@ -15,7 +15,7 @@ export default function fetchAll(req, res) {
     return res.redirect("back");
   }
 
-  req.hull.client.logger.info("fetchAll.started");
+  req.hull.client.logger.debug("fetchAll.started");
 
   res.redirect("back");
   return jobs.fetch({ shipApp: req.shipApp, payload: { limit, order_by, typeformUid } });

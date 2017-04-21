@@ -13,6 +13,8 @@ if (process.env.LOG_LEVEL) {
   Hull.logger.transports.console.level = process.env.LOG_LEVEL;
 }
 
+Hull.logger.transports.console.json = true;
+
 const hullMiddleware = Hull.Middleware({ hostSecret: process.env.SECRET, cacheShip: false });
 const middlewareSet = [tokenMiddleware, hullMiddleware, appMiddleware];
 const app = WebApp();
