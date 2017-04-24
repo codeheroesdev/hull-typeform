@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hull-ships/hull-intecom.git"
+    "url": "https://github.com/hull-ships/hull-typeform.git"
   },
   "keywords": [
     "hull",
@@ -28,9 +28,9 @@
   "author": "Hull",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hull-ships/hull-intercom/issues"
+    "url": "https://github.com/hull-ships/hull-typeform/issues"
   },
-  "homepage": "https://github.com/hull-ships/hull-intercom",
+  "homepage": "https://github.com/hull-ships/hull-typeform",
   "dependencies": {
     "JSONStream": "^1.1.1",
     "babel-cli": "^6.14.0",
