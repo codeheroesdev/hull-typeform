@@ -5,8 +5,8 @@ import _ from "lodash";
  * @param  {Object} req
  * @return {Promise}
  */
-export default function saveUsers(req) {
-  const { client, metric } = req.hull;
+export default function saveUsers(ctx, req) {
+  const { client, metric } = ctx;
   const { syncAgent } = req.shipApp;
   const { body, typeformUid } = req.payload;
 
@@ -26,10 +26,10 @@ export default function saveUsers(req) {
     client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
 
     return Promise.all([
-      req.hull.client
+      ctx.client
       .as(ident)
       .traits(traits),
-      req.hull.client
+      ctx.client
       .as(ident)
       .track("Form Submitted", eventProps, eventContext)
     ]);

@@ -19,7 +19,6 @@ const options = { connector, app };
 
 connector.setupApp(app);
 const typeform_uid = "54321";
-
 app.use((req, res, next) => {
   req.hull.client = ClientMock();
   req.hull.ship = {

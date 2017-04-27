@@ -1,7 +1,7 @@
 import saveUsers from "./save-users";
 
-export default function fetch(req) {
-  const { client, metric } = req.hull;
+export default function fetch(ctx, req) {
+  const { client, metric } = ctx;
   const { typeformClient } = req.shipApp;
   const { typeformUid, limit, offset = 0, since, order_by } = req.payload;
 
@@ -17,13 +17,13 @@ export default function fetch(req) {
     .then(({ body }) => {
       metric.increment("ship.incoming.users.fetch", body.responses.length);
       client.logger.debug("ship.incoming.usersData", body.responses.length);
-      return saveUsers({ shipApp: req.shipApp, payload: { body, typeformUid } })
+      return saveUsers(ctx, { shipApp: req.shipApp, payload: { body, typeformUid } })
         .then(() => {
           if (since || body.responses.length < limit) {
             return true;
           }
           client.logger.debug("fetch.nextCall");
-          return fetch({ shipApp: req.shipApp, payload: { limit, offset: (offset + limit), typeformUid } });
+          return fetch(ctx, { shipApp: req.shipApp, payload: { limit, offset: (offset + limit), typeformUid } });
         });
     })
     .catch(err => {

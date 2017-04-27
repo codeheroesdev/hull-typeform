@@ -21,5 +21,5 @@ export default function fetch(req, res) {
   req.hull.client.logger.info("fetch.since", moment(since, "X").format());
 
   res.end("ok");
-  return jobs.fetch({ shipApp: req.shipApp, payload: { limit, order_by, since, typeformUid } });
+  return jobs.fetch(req.hull, { shipApp: req.shipApp, payload: { limit, order_by, since, typeformUid } });
 }
