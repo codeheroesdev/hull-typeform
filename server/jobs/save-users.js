@@ -5,8 +5,9 @@ import _ from "lodash";
  * @param  {Object} req
  * @return {Promise}
  */
-export default function saveUsers(req) {
-  const { syncAgent, instrumentationAgent, hullClient } = req.shipApp;
+export default function saveUsers(ctx, req) {
+  const { client, metric } = ctx;
+  const { syncAgent } = req.shipApp;
   const { body, typeformUid } = req.payload;
 
   return Promise.all(_.map(body.responses, response => {
@@ -16,19 +17,19 @@ export default function saveUsers(req) {
     const eventContext = syncAgent.getEventContext(response);
 
     if (!ident.email) {
-      hullClient.logger.debug("ship.incoming.user.skip", { ident, traits });
+      client.logger.debug("ship.incoming.user.skip", { ident, traits });
       return null;
     }
 
-    instrumentationAgent.metricInc("ship.incoming.users", 1, hullClient.configuration());
-    hullClient.logger.debug("ship.incoming.user", { ident, traits });
-    hullClient.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
+    metric.increment("ship.incoming.users", 1);
+    client.logger.debug("ship.incoming.user", { ident, traits });
+    client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
 
     return Promise.all([
-      hullClient
+      ctx.client
       .as(ident)
       .traits(traits),
-      hullClient
+      ctx.client
       .as(ident)
       .track("Form Submitted", eventProps, eventContext)
     ]);

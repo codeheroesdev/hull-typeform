@@ -3,15 +3,14 @@ import striptags from "striptags";
 
 export default class SyncAgent {
 
-  constructor(req, hullAgent) {
-    this.hullClient = req.hull.client;
-    this.hullAgent = hullAgent;
+  constructor({ ship }) {
+    this.ship = ship;
   }
 
   getIdent(typeformResponse) {
     const ident = {};
 
-    const emailQuestionId = this.hullAgent.getShipSettings().question_as_email;
+    const emailQuestionId = this.ship.private_settings.question_as_email;
     if (emailQuestionId) {
       let email;
       if (_.get(typeformResponse.answers, emailQuestionId)) {
@@ -27,9 +26,9 @@ export default class SyncAgent {
   }
 
   getTraits(typeformResponse) {
-    const answersToSave = _.get(this.hullAgent.getShipSettings(), "sync_answers_to_hull", []);
+    const answersToSave = _.get(this.ship.private_settings, "sync_answers_to_hull", []);
 
-    const traits = _.reduce(answersToSave, (t, answer) => {
+    return _.reduce(answersToSave, (t, answer) => {
       let answerValue;
 
       if (this.isChoice(answer.question_id)) {
@@ -49,8 +48,6 @@ export default class SyncAgent {
       _.set(t, answer.hull, this.castAnswerType(answer.question_id, answerValue));
       return t;
     }, {});
-
-    return traits;
   }
 
   getEventProps(response, formId, questions) {

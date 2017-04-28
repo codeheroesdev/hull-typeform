@@ -6,11 +6,10 @@ import Promise from "bluebird";
 
 export default class TypeformClient {
 
-  constructor(hull, instrumentationAgent) {
-    this.apiKey = _.get(hull.ship, "private_settings.api_key");
-    this.hull = hull;
-    this.instrumentationAgent = instrumentationAgent;
-
+  constructor({ ship, client, metric }) {
+    this.apiKey = _.get(ship, "private_settings.api_key");
+    this.client = client;
+    this.metric = metric;
     this.req = request;
   }
 
@@ -30,8 +29,8 @@ export default class TypeformClient {
         key: this.apiKey
       })
       .on("request", (reqData) => {
-        this.hull.client.logger.info("REQ", reqData.method, reqData.url, reqData.qs);
-        this.instrumentationAgent.metricInc("ship.service_api.call", 1, this.hull.client.configuration());
+        this.client.logger.info("REQ", reqData.method, reqData.url, reqData.qs);
+        this.metric.increment("ship.service_api.call", 1);
       });
       // .on("response", (res) => {});
 
