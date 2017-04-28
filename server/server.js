@@ -1,9 +1,10 @@
+/* @flow */
 import cors from "cors";
 import bodyParser from "body-parser";
 import * as actions from "./actions";
 import appMiddleware from "./lib/app-middleware";
 
-module.exports = function server({ connector, app }) {
+module.exports = function server({ connector, app }: any) {
   const middlewareSet = [connector.clientMiddleware(), appMiddleware];
 
   app.post("/fetch", bodyParser.urlencoded({ extended: true }), ...middlewareSet, actions.fetch);

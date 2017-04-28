@@ -1,6 +1,8 @@
+/* @flow */
+import { Request, Response } from "express";
 import * as jobs from "../jobs";
 
-export default function fetchAll(req, res) {
+export default function fetchAll(req: Request, res: Response) {
   const { typeformClient } = req.shipApp;
 
   if (!typeformClient.ifConfigured()) {

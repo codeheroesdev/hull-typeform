@@ -8,9 +8,10 @@
     "build:server": "babel server -d build",
     "start": "npm run build && COMBINED=true node build",
     "start:dev": "NODE_ENV=development babel-watch -L server",
-    "test": "npm run test:lint && npm run test:units",
+    "test": "npm run test:lint && npm run test:units && npm run test:flow",
     "test:lint": "./node_modules/.bin/eslint server",
-    "test:units": "NODE_ENV=test ./node_modules/.bin/mocha -R spec ./tests/index",
+    "test:units": "NODE_ENV=test mocha -R spec ./tests/index",
+    "test:flow": "flow check",
     "clean": "rm -rf build",
     "postinstall": "npm run build",
     "flow": "flow"
@@ -72,6 +73,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.0.4",
+    "babel-preset-flow": "^6.23.0",
     "babel-watch": "^2.0.2",
     "eslint": "^2.9.0",
     "eslint-config-airbnb-base": "^3.0.1",

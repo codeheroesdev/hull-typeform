@@ -1,7 +1,9 @@
+/* @flow */
+import { Request, Response } from "express";
 import _ from "lodash";
 import striptags from "striptags";
 
-export default function getQuestions(req, res) {
+export default function getQuestions(req: Request, res: Response) {
   const { typeformClient, syncAgent } = req.shipApp;
 
   if (!req.hull.ship.private_settings.typeform_uid

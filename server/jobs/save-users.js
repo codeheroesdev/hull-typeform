@@ -1,11 +1,13 @@
+/* @flow */
 import Promise from "bluebird";
 import _ from "lodash";
 
 /**
+ * @param ctx
  * @param  {Object} req
  * @return {Promise}
  */
-export default function saveUsers(ctx, req) {
+export default function saveUsers(ctx: any, req: any) {
   const { client, metric } = ctx;
   const { syncAgent } = req.shipApp;
   const { body, typeformUid } = req.payload;

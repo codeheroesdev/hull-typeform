@@ -1,6 +1,7 @@
+/* @flow */
 import saveUsers from "./save-users";
 
-export default function fetch(ctx, req) {
+export default function fetch(ctx: any, req: any) {
   const { client, metric } = ctx;
   const { typeformClient } = req.shipApp;
   const { typeformUid, limit, offset = 0, since, order_by } = req.payload;

@@ -1,8 +1,10 @@
+/* @flow */
+import { Request, Response } from "express";
 import moment from "moment";
 
 import * as jobs from "../jobs";
 
-export default function fetch(req, res) {
+export default function fetch(req: Request, res: Response) {
   const { typeformClient } = req.shipApp;
 
   if (!typeformClient.ifConfigured()) {
