@@ -19,13 +19,15 @@ export default function saveUsers(ctx: any, req: any) {
     const eventContext = syncAgent.getEventContext(response);
 
     if (!ident.email) {
-      client.logger.debug("ship.incoming.user.skip", { ident, traits });
+      client.logger.info("incoming.user.skip", { ...ident, reason: "No email defined" });
       return null;
     }
 
     metric.increment("ship.incoming.users", 1);
     client.logger.debug("ship.incoming.user", { ident, traits });
     client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
+
+    client.logger.info("incoming.user.success", ident);
 
     return Promise.all([
       ctx.client

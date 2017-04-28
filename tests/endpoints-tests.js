@@ -10,7 +10,7 @@ import ClientMock from "./mocks/client-mock";
 import Server from "../server/server";
 
 
-const port = 8080;
+const port = 8070;
 const app = express();
 
 const connector = new Hull.Connector({ port, hostSecret: "123" });
@@ -64,7 +64,7 @@ describe("Server", () => {
   describe("for /schema/typeforms", () => {
     it("should connect with typeform API and return status OK.", (done) => {
       request
-        .get("http://127.0.0.1:8080/schema/typeforms")
+        .get(`http://127.0.0.1:${port}/schema/typeforms`)
         .on("response", (response) => {
           assert(response.statusCode === 200);
           typeformAllFormsMock.done();
@@ -78,7 +78,7 @@ describe("Server", () => {
       let body;
 
       request
-        .get("http://127.0.0.1:8080/admin")
+        .get(`http://127.0.0.1:${port}/admin`)
         .on("response", (response) => {
           assert(response.statusCode === 200);
           typeformSingleFormMock.done();
