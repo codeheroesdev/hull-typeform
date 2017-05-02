@@ -11,3 +11,9 @@ To reconcile user Identities, you can setup your Typeform's to embed [Hidden Fie
 - `external_id` - The User's Id in your own database
 - `hull_id` - The User's Hull Id
 - `email` - The user's email (overridable in settings)
+
+To enable this, don't forget to enable Hidden fields as follows in your Form:
+
+![Hidden Fields Setup](./typeform.png)
+
+To configure hidden fields, click on the URL that appears as the topmost box in the `Build` tab of Typeform
