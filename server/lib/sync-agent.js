@@ -3,9 +3,9 @@ import striptags from "striptags";
 
 const identMappings = {
   email: 'email',
-  anonymousId: 'guest_id',
-  externalId: 'external_id',
-  hullId: 'id',
+  anonymous_id: 'guest_id',
+  external_id: 'external_id',
+  hull_id: 'id',
 }
 
 export default class SyncAgent {

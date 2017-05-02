@@ -1,4 +1,4 @@
 # Changelog
 
 ## 0.1.1
-- Automatically uses `anonymousId`, `externalId`, `email` when passed as Hidden fields to reconcile Identity.
+- Automatically uses `anonymous_id`, `external_id`, `hull_id`, `email` when passed as Hidden fields to reconcile Identity.
