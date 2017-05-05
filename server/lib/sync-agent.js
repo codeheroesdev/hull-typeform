@@ -1,25 +1,34 @@
 import _ from "lodash";
 import striptags from "striptags";
 
+const identMappings = {
+  email: "email",
+  anonymous_id: "guest_id",
+  external_id: "external_id",
+  hull_id: "id",
+};
+
 export default class SyncAgent {
 
   constructor({ ship }) {
     this.ship = ship;
   }
 
-  getIdent(typeformResponse) {
+  getIdent({ hidden, answers }) {
     const ident = {};
+    _.map(identMappings, (v, k) => {
+      const value = _.get(hidden, k);
+      if (value) ident[v] = value;
+    });
 
     const emailQuestionId = this.ship.private_settings.question_as_email;
     if (emailQuestionId) {
-      let email;
-      if (_.get(typeformResponse.answers, emailQuestionId)) {
-        email = _.get(typeformResponse.answers, emailQuestionId);
+      if (_.get(hidden, emailQuestionId)) {
+        ident.email = _.get(hidden, emailQuestionId);
       }
-      if (_.get(typeformResponse.hidden, emailQuestionId)) {
-        email = _.get(typeformResponse.hidden, emailQuestionId);
+      if (_.get(answers, emailQuestionId)) {
+        ident.email = _.get(answers, emailQuestionId);
       }
-      ident.email = _(email).trim().toLowerCase();
     }
 
     return ident;
