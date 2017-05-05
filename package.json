@@ -1,6 +1,6 @@
 {
   "name": "typeform-webhook",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Hull Typeform integration",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "start": "npm run build && COMBINED=true node build",
     "start:dev": "NODE_ENV=development babel-watch -L server",
     "test": "npm run test:lint && npm run test:units && npm run test:flow",
-    "test:lint": "./node_modules/.bin/eslint server",
-    "test:units": "NODE_ENV=test mocha -R spec ./tests/index",
+    "test:lint": "eslint server",
+    "test:units": "NODE_ENV=test mocha --require babel-register -R spec ./tests",
     "test:flow": "flow check",
     "clean": "rm -rf build",
     "postinstall": "npm run build",
