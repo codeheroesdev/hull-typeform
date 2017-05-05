@@ -2,47 +2,42 @@ import _ from "lodash";
 import striptags from "striptags";
 
 const identMappings = {
-  email: 'email',
-  anonymous_id: 'guest_id',
-  external_id: 'external_id',
-  hull_id: 'id',
-}
+  email: "email",
+  anonymous_id: "guest_id",
+  external_id: "external_id",
+  hull_id: "id",
+};
 
 export default class SyncAgent {
 
-  constructor(req, hullAgent) {
-    this.hullClient = req.hull.client;
-    this.hullAgent = hullAgent;
+  constructor({ ship }) {
+    this.ship = ship;
   }
 
   getIdent({ hidden, answers }) {
     const ident = {};
-
     _.map(identMappings, (v, k) => {
-      const value = _.get(hidden, k)
+      const value = _.get(hidden, k);
       if (value) ident[v] = value;
-    })
+    });
 
-    const emailQuestionId = this.hullAgent.getShipSettings().question_as_email;
+    const emailQuestionId = this.ship.private_settings.question_as_email;
     if (emailQuestionId) {
-
       if (_.get(hidden, emailQuestionId)) {
         ident.email = _.get(hidden, emailQuestionId);
       }
-
       if (_.get(answers, emailQuestionId)) {
         ident.email = _.get(answers, emailQuestionId);
       }
-
     }
 
     return ident;
   }
 
   getTraits(typeformResponse) {
-    const answersToSave = _.get(this.hullAgent.getShipSettings(), "sync_answers_to_hull", []);
+    const answersToSave = _.get(this.ship.private_settings, "sync_answers_to_hull", []);
 
-    const traits = _.reduce(answersToSave, (t, answer) => {
+    return _.reduce(answersToSave, (t, answer) => {
       let answerValue;
 
       if (this.isChoice(answer.question_id)) {
@@ -62,8 +57,6 @@ export default class SyncAgent {
       _.set(t, answer.hull, this.castAnswerType(answer.question_id, answerValue));
       return t;
     }, {});
-
-    return traits;
   }
 
   getEventProps(response, formId, questions) {

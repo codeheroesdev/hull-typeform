@@ -1,12 +1,15 @@
+/* @flow */
 import Promise from "bluebird";
 import _ from "lodash";
 
 /**
+ * @param ctx
  * @param  {Object} req
  * @return {Promise}
  */
-export default function saveUsers(req) {
-  const { syncAgent, instrumentationAgent, hullClient } = req.shipApp;
+export default function saveUsers(ctx: any, req: any) {
+  const { client, metric } = ctx;
+  const { syncAgent } = req.shipApp;
   const { body, typeformUid } = req.payload;
 
   return Promise.all(_.map(body.responses, response => {
@@ -16,20 +19,22 @@ export default function saveUsers(req) {
     const eventContext = syncAgent.getEventContext(response);
 
     if (!ident.email) {
-      hullClient.logger.debug("ship.incoming.user.skip", { ident, traits });
+      client.logger.info("incoming.user.skip", { ...ident, reason: "No email defined" });
       return null;
     }
 
-    instrumentationAgent.metricInc("ship.incoming.users", 1, hullClient.configuration());
-    hullClient.logger.debug("ship.incoming.user", { ident, traits });
-    hullClient.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
+    metric.increment("ship.incoming.users", 1);
+    client.logger.debug("ship.incoming.user", { ident, traits });
+    client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
+
+    client.logger.info("incoming.user.success", ident);
 
     return Promise.all([
-      hullClient
-      .as(ident)
+      ctx.client
+      .asUser(ident)
       .traits(traits),
-      hullClient
-      .as(ident)
+      ctx.client
+      .asUser(ident)
       .track("Form Submitted", eventProps, eventContext)
     ]);
   }));

@@ -1,8 +1,10 @@
+/* @flow */
+import { Request, Response } from "express";
 import moment from "moment";
 
 import * as jobs from "../jobs";
 
-export default function fetch(req, res) {
+export default function fetch(req: Request, res: Response) {
   const { typeformClient } = req.shipApp;
 
   if (!typeformClient.ifConfigured()) {
@@ -21,5 +23,5 @@ export default function fetch(req, res) {
   req.hull.client.logger.info("fetch.since", moment(since, "X").format());
 
   res.end("ok");
-  return jobs.fetch({ shipApp: req.shipApp, payload: { limit, order_by, since, typeformUid } });
+  return jobs.fetch(req.hull, { shipApp: req.shipApp, payload: { limit, order_by, since, typeformUid } });
 }

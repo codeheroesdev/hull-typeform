@@ -1,4 +1,6 @@
-export default function getForms(req, res) {
+/* @flow */
+import { Request, Response } from "express";
+export default function getForms(req: Request, res: Response) {
   const { typeformClient } = req.shipApp;
 
   if (!typeformClient.ifConfigured()) {

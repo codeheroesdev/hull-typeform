@@ -1,6 +1,8 @@
+/* @flow */
+import { Request, Response } from "express";
 import Promise from "bluebird";
 
-export default function admin(req, res) {
+export default function admin(req: Request, res: Response) {
   const { typeformClient } = req.shipApp;
 
   (() => {

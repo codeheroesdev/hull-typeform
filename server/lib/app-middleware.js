@@ -1,21 +1,16 @@
-import HullAgent from "../util/hull-agent";
+/* @flow */
+import { Request, Response, Next } from "express";
 import TypeformClient from "./typeform-client";
-import InstrumentationAgent from "../util/instrumentation-agent";
 import SyncAgent from "./sync-agent";
 
-export default function appMiddleware(req, res, next) {
+export default function appMiddleware(req: Request, res: Response, next: Next) {
   if (req.hull) {
-    const instrumentationAgent = new InstrumentationAgent();
-    const typeformClient = new TypeformClient(req.hull, instrumentationAgent);
-    const hullAgent = new HullAgent(req);
-    const syncAgent = new SyncAgent(req, hullAgent);
+    const typeformClient = new TypeformClient(req.hull);
+    const syncAgent = new SyncAgent(req.hull);
 
     req.shipApp = req.shipApp || {
-      instrumentationAgent,
       typeformClient,
-      hullAgent,
-      syncAgent,
-      hullClient: req.hull.client
+      syncAgent
     };
   }
   return next();

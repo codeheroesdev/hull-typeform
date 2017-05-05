@@ -1,6 +1,8 @@
+/* @flow */
+import { Request, Response } from "express";
 import * as jobs from "../jobs";
 
-export default function fetchAll(req, res) {
+export default function fetchAll(req: Request, res: Response) {
   const { typeformClient } = req.shipApp;
 
   if (!typeformClient.ifConfigured()) {
@@ -18,5 +20,5 @@ export default function fetchAll(req, res) {
   req.hull.client.logger.info("fetchAll.started");
 
   res.redirect("back");
-  return jobs.fetch({ shipApp: req.shipApp, payload: { limit, order_by, typeformUid } });
+  return jobs.fetch(req.hull, { shipApp: req.shipApp, payload: { limit, order_by, typeformUid } });
 }
