@@ -35,17 +35,6 @@
       }
     },
     {
-      "name":"question_as_id",
-      "title": "Which field match as user id",
-      "description": "If there is a id field in the form - pick that",
-      "type": "string",
-      "format": "select",
-      "options" : {
-        "allowCreate": false,
-        "loadOptions": "/schema/questions"
-      }
-    },
-    {
       "name" : "sync_answers_to_hull",
       "title" : "List of form questions to save into Hull",
       "description": "Data fields should be saved to traits ending with _data suffix",

@@ -36,18 +36,6 @@ export default class SyncAgent {
 
     }
 
-    const idQuestionId = this.hullAgent.getShipSettings().question_as_id;
-    if (idQuestionId) {
-      let id;
-      if (_.get(typeformResponse.answers, idQuestionId)) {
-        id = _.get(typeformResponse.answers, idQuestionId);
-      }
-      if (_.get(typeformResponse.hidden, idQuestionId)) {
-        id = _.get(typeformResponse.hidden, idQuestionId);
-      }
-      ident.id = _(id).trim().toLowerCase();
-    }
-
     return ident;
   }
 

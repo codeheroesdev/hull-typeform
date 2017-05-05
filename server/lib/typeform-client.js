@@ -30,7 +30,7 @@ export default class TypeformClient {
         key: this.apiKey
       })
       .on("request", (reqData) => {
-        this.hull.client.logger.debug("REQ", reqData.method, reqData.url, reqData.qs);
+        this.hull.client.logger.info("REQ", reqData.method, reqData.url, reqData.qs);
         this.instrumentationAgent.metricInc("ship.service_api.call", 1, this.hull.client.configuration());
       });
       // .on("response", (res) => {});

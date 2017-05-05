@@ -15,16 +15,14 @@ export default function saveUsers(req) {
     const eventProps = syncAgent.getEventProps(response, typeformUid, body.questions);
     const eventContext = syncAgent.getEventContext(response);
 
-    if (!ident.email && !ident.id) {
-      hullClient.logger.info("incoming.user.skip", { ...ident, reason: "no email or id set" });
+    if (!ident.email) {
+      hullClient.logger.debug("ship.incoming.user.skip", { ident, traits });
       return null;
     }
 
     instrumentationAgent.metricInc("ship.incoming.users", 1, hullClient.configuration());
     hullClient.logger.debug("ship.incoming.user", { ident, traits });
     hullClient.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
-
-    hullClient.logger.info("incoming.user.success", { ...ident });
 
     return Promise.all([
       hullClient
