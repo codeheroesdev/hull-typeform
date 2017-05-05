@@ -7,15 +7,13 @@ import nock from "nock";
 import request from "request";
 import cheerio from "cheerio";
 import ClientMock from "./mocks/client-mock";
-import Server from "../server/server";
+import server from "../server/server";
 
 
 const port = 8070;
 const app = express();
 
 const connector = new Hull.Connector({ port, hostSecret: "123" });
-const options = { connector, app };
-
 
 connector.setupApp(app);
 const typeform_uid = "54321";
@@ -31,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-connector.startApp(Server(options));
+connector.startApp(server(app));
 
 const typeformAllFormsMock =
   nock("https://api.typeform.com/v1")

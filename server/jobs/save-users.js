@@ -31,10 +31,10 @@ export default function saveUsers(ctx: any, req: any) {
 
     return Promise.all([
       ctx.client
-      .as(ident)
+      .asUser(ident)
       .traits(traits),
       ctx.client
-      .as(ident)
+      .asUser(ident)
       .track("Form Submitted", eventProps, eventContext)
     ]);
   }));
