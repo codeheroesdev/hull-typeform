@@ -9,8 +9,8 @@
   "private_settings":[
     {
       "name":"api_key",
-      "title": "API key",
-      "description":"You can find it on My Account page.",
+      "title": "Typeform API key",
+      "description":"Click on \"My Account\" and you will find your key at the bottom of the page.",
       "type": "string"
     },
     {
@@ -25,8 +25,8 @@
     },
     {
       "name":"question_as_email",
-      "title": "Which field match as user email",
-      "description": "If there is a email type field in the form - pick that",
+      "title": "Select the field matching the user email",
+      "description": "You can only pick fields of type email",
       "type": "string",
       "format": "select",
       "options" : {
@@ -37,7 +37,7 @@
     {
       "name" : "sync_answers_to_hull",
       "title" : "List of form questions to save into Hull",
-      "description": "Data fields should be saved to traits ending with _data suffix",
+      "description": "Date fields should be saved to traits ending with _date suffix",
       "type" : "array",
       "format" : "table",
       "default": [],
