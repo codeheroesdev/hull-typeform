@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.1
+- upgrade to hull-node@0.11.4
+
 ## 0.2.0
 - upgrade to hull-node 0.11.0
 
