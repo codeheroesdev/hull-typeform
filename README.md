@@ -10,3 +10,4 @@
 These logs are specific for Typeform Connector :
   * error :
     - incoming.fetch.error - logged when encountered error during fetch operation
+    
