@@ -31,7 +31,7 @@ export default class TypeformClient {
         key: this.apiKey
       })
       .on("request", (reqData) => {
-        this.client.logger.debug("REQ", reqData.method, reqData.url, reqData.qs);
+        this.client.logger.debug("typeform.request", reqData.method, reqData.url, reqData.qs);
         this.metric.increment("ship.service_api.call", 1);
       });
   }

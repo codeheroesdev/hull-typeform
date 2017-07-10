@@ -28,6 +28,6 @@ export default function fetch(ctx: any, req: any) {
         });
     })
     .catch(err => {
-      client.logger.error("incoming.fetch.error", err);
+      client.logger.error("incoming.fetch.error", { errors: err });
     });
 }
