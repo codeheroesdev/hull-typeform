@@ -17,17 +17,19 @@ export default function fetch(ctx: any, req: any) {
     .catch(typeformClient.handleError)
     .then(({ body }) => {
       metric.increment("ship.incoming.users.fetch", body.responses.length);
-      client.logger.debug("ship.incoming.usersData", body.responses.length);
+      client.logger.debug("incoming.job.progress", { jobName: "fetch-all", stepName: "usersData", progress: body.responses.length });
       return saveUsers(ctx, { shipApp: req.shipApp, payload: { body, typeformUid } })
         .then(() => {
           if (since || body.responses.length < limit) {
+            client.logger.info("incoming.job.success", { jobName: "fetch-all" });
             return true;
           }
-          client.logger.debug("fetch.nextCall");
+
+          client.logger.debug("incoming.job.progress", { jobName: "fetch-all", stepName: "next-call" });
           return fetch(ctx, { shipApp: req.shipApp, payload: { limit, offset: (offset + limit), typeformUid } });
         });
     })
     .catch(err => {
-      client.logger.error("incoming.fetch.error", { errors: err });
+      client.logger.info("incoming.job.error", { jobName: "fetch-all", errors: err });
     });
 }
