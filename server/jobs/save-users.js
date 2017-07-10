@@ -8,7 +8,7 @@ import _ from "lodash";
  * @return {Promise}
  */
 export default function saveUsers(ctx: any, req: any) {
-  const { client, metric } = ctx;
+  const { metric } = ctx;
   const { syncAgent } = req.shipApp;
   const { body, typeformUid } = req.payload;
 
@@ -17,25 +17,21 @@ export default function saveUsers(ctx: any, req: any) {
     const traits = syncAgent.getTraits(response);
     const eventProps = syncAgent.getEventProps(response, typeformUid, body.questions);
     const eventContext = syncAgent.getEventContext(response);
+    const asUser = ctx.client.asUser(ident);
 
     if (!ident.email) {
-      client.logger.info("incoming.user.skip", { ...ident, reason: "No email defined" });
+      asUser.logger.info("incoming.user.skip", { reason: "No email defined" });
       return null;
     }
 
     metric.increment("ship.incoming.users", 1);
-    client.logger.debug("ship.incoming.user", { ident, traits });
-    client.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
+    asUser.logger.debug("ship.incoming.event", "Form Submitted", eventProps, eventContext);
 
-    client.logger.info("incoming.user.success", ident);
+    asUser.logger.info("incoming.user.success", { traits });
 
     return Promise.all([
-      ctx.client
-      .asUser(ident)
-      .traits(traits),
-      ctx.client
-      .asUser(ident)
-      .track("Form Submitted", eventProps, eventContext)
+      asUser.traits(traits),
+      asUser.track("Form Submitted", eventProps, eventContext)
     ]);
   }));
 }

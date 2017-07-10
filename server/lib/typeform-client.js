@@ -22,19 +22,18 @@ export default class TypeformClient {
       throw new Error("Client access data not set!");
     }
 
-    const preparedReq = req
+    // .on("response", (res) => {});
+
+    return req
       .use(prefixPlugin("https://api.typeform.com/v1"))
       .use(superagentPromisePlugin)
       .query({
         key: this.apiKey
       })
       .on("request", (reqData) => {
-        this.client.logger.info("REQ", reqData.method, reqData.url, reqData.qs);
+        this.client.logger.debug("REQ", reqData.method, reqData.url, reqData.qs);
         this.metric.increment("ship.service_api.call", 1);
       });
-      // .on("response", (res) => {});
-
-    return preparedReq;
   }
 
   get(url) {

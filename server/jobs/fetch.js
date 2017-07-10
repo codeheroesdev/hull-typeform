@@ -28,7 +28,6 @@ export default function fetch(ctx: any, req: any) {
         });
     })
     .catch(err => {
-      console.error(err);
-      client.logger.error("fetch.error", err);
+      client.logger.error("incoming.fetch.error", err);
     });
 }
