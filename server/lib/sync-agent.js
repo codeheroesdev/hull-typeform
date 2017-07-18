@@ -36,7 +36,6 @@ export default class SyncAgent {
 
   getTraits(typeformResponse) {
     const answersToSave = _.get(this.ship.private_settings, "sync_answers_to_hull", []);
-    console.log(answersToSave);
 
     return _.reduce(answersToSave, (t, answer) => {
       let answerValue;
