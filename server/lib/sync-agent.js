@@ -36,13 +36,14 @@ export default class SyncAgent {
 
   getTraits(typeformResponse) {
     const answersToSave = _.get(this.ship.private_settings, "sync_answers_to_hull", []);
+    console.log(answersToSave);
 
     return _.reduce(answersToSave, (t, answer) => {
       let answerValue;
 
       if (this.isChoice(answer.question_id)) {
         const rootQuestionId = answer.question_id.split("_").slice(0, 2).join("_");
-        answerValue = _.filter(typeformResponse.answers, (a, questionId) => {
+        answerValue = _.filter(typeformResponse.answers, (questionId) => {
           return questionId.search(rootQuestionId) !== -1;
         });
       } else {
