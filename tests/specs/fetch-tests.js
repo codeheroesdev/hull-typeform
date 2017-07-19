@@ -4,7 +4,7 @@ import assert from "assert";
 import bootstrap from "./bootstrap";
 import TypeformMock from "./typeform-mock";
 
-describe("connector for /fetch-all endpoint", function test() {
+describe("connector for fetch operation", function test() {
   let minihull;
   let server;
   const typeformMock = new TypeformMock();
@@ -12,13 +12,7 @@ describe("connector for /fetch-all endpoint", function test() {
   const private_settings = {
     api_key: "0987654321",
     typeform_uid: "123456789",
-    question_as_email: "typeform_id",
-    sync_answers_to_hull: [
-      {
-        question_id: "choice_7",
-        hull: "hull_answer_id"
-      }
-    ]
+    question_as_email: "typeform_id"
   };
 
   beforeEach((done) => {
@@ -48,7 +42,13 @@ describe("connector for /fetch-all endpoint", function test() {
   });
 
 
-  it("should fetch all users from typeform for choice type of answer", (done) => {
+  it("should fetch all users for /fetch-all endpoint from typeform for answer type equal to choice", (done) => {
+    private_settings.sync_answers_to_hull = [
+      {
+        question_id: "choice_7",
+        hull: "hull_answer_id"
+      }
+    ];
     const getTypeformClientNock = typeformMock.setUpGetClientNock("choice_7");
 
     minihull.postConnector("123456789012345678901234", "http://localhost:8000/fetch-all").then(() => {
@@ -74,7 +74,7 @@ describe("connector for /fetch-all endpoint", function test() {
   });
 
 
-  it("should fetch all users from typeform for another answer type than choice", (done) => {
+  it("should fetch all users for /fetch-all endpoint from typeform for another answer type than choice", (done) => {
     private_settings.sync_answers_to_hull = [
       {
         question_id: "notchoice_3",
@@ -84,6 +84,67 @@ describe("connector for /fetch-all endpoint", function test() {
     const getTypeformClientNock = typeformMock.setUpGetClientNock("notchoice_3");
 
     minihull.postConnector("123456789012345678901234", "http://localhost:8000/fetch-all").then(() => {
+      setTimeout(() => {
+        getTypeformClientNock.done();
+      }, 1000);
+    });
+
+    minihull.on("incoming.request@/api/v1/firehose", (req) => {
+      const batch = req.body.batch;
+
+      assert(batch[0].type === "traits");
+      assert(batch[0].body.hull_answer_id === "notchoice_value");
+
+      assert(batch[1].type === "track");
+      assert(batch[1].body.event === "Form Submitted");
+      assert(batch[1].body.useragent === "hull");
+      assert(batch[1].body.source === "typeform");
+
+      done();
+    });
+  });
+
+  it("should fetch users for /fetch endpoint and answer type equal to choice", (done) => {
+    private_settings.sync_answers_to_hull = [
+      {
+        question_id: "choice_7",
+        hull: "hull_answer_id"
+      }
+    ];
+    const getTypeformClientNock = typeformMock.setUpGetClientNock("choice_7");
+
+    minihull.postConnector("123456789012345678901234", "http://localhost:8000/fetch").then(() => {
+      setTimeout(() => {
+        getTypeformClientNock.done();
+      }, 1000);
+    });
+
+    minihull.on("incoming.request@/api/v1/firehose", (req) => {
+      const batch = req.body.batch;
+
+      assert(batch[0].type === "traits");
+      assert(batch[0].body.hull_answer_id.length === 1);
+      assert(batch[0].body.hull_answer_id[0] === "choice_7");
+
+      assert(batch[1].type === "track");
+      assert(batch[1].body.event === "Form Submitted");
+      assert(batch[1].body.useragent === "hull");
+      assert(batch[1].body.source === "typeform");
+
+      done();
+    });
+  });
+
+  it("should fetch users for /fetch endpoint and answer type different than choice", (done) => {
+    private_settings.sync_answers_to_hull = [
+      {
+        question_id: "notchoice_3",
+        hull: "hull_answer_id"
+      }
+    ];
+    const getTypeformClientNock = typeformMock.setUpGetClientNock("notchoice_3");
+
+    minihull.postConnector("123456789012345678901234", "http://localhost:8000/fetch").then(() => {
       setTimeout(() => {
         getTypeformClientNock.done();
       }, 1000);
